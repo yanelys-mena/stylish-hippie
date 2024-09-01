@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db { 
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id String @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  email   String   @unique
+  firstName    String
+  lastName    String
+  username String @unique
+  password String
+  products Product[]
+  stripeAccountId String?
+  orders Order[]
+  shoppingSession ShoppingSession[]
+  address UserAddress?
+}
+
+model UserAddress {
+  id String @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  address_line1 String
+  address_line2 String
+  city String
+  state String
+  postal_code String
+  country String
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id String @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  name String
+  parentId String?
+  parent     Category?  @relation("CategoryToChildren", fields: [parentId], references: [id])
+  children   Category[] @relation("CategoryToChildren")
+  products Product[]
+}
+
+model Product {
+  id String @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  title String
+  description String
+  condition Int // use Enums 1 is New 2 is Preowned
+  color String?
+  SKU String?
+  price Float
+  size String
+  shippingCost Decimal
+  categoryId String
+  userId String
+  brandId String
+  hasActiveDiscount Boolean
+  discountPercent Decimal
+  sold Boolean
+  images String[]
+  brand Brand @relation(fields: [brandId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+  productImages ProductMedia[]
+  cartItem CartItem?
+}
+
+model ProductMedia {
+  id String @id @default(uuid())
+  isDefaultImage Boolean
+  url String
+  media_type String?
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model Brand {
+  id String @id @default(uuid())
+  name String @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  products Product[]
+}
+
+model Order {
+  id String @id @default(uuid())
+  userId String
+  stripePaymentId String
+  total Decimal
+  status String // purchased, on the way // delivered etc
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  user User @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+  trackingNumber String @unique
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+  orderId String
+  productId String
+  quantity Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  order Order @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model ShoppingSession {
+  id String @id @default(uuid())
+  userId String
+  total Decimal
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  cartItems CartItem[]
+  user User @relation(fields: [userId], references: [id])
+}
+
+model CartItem {
+  id String @id @default(uuid())
+  quantity Int
+  productId String @unique
+  sessionId String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  product Product @relation(fields: [productId], references: [id])
+  session ShoppingSession @relation(fields: [sessionId], references: [id])
+}
+
