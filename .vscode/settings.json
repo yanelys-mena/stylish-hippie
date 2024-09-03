@@ -1,0 +1,12 @@
+{
+    "editor.autoClosingComments": "always",
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always",
+        "source.organizeImports": "always"
+
+
+    }
+
+
+}

@@ -1,0 +1,60 @@
+.navWrapper {
+    width: 100%;
+    background-color: red;
+    border: 1px solid gray;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 135px;
+    padding: 15px 40px 0 40px;
+    box-sizing: border-box;
+}
+
+.nav {
+    display: flex;
+flex-direction: column;
+background-color: pink;
+width: 100%;
+}
+.topNav {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80%;
+
+}
+
+.logo {
+font-family: 'ptSerif';
+font-weight: 700;
+font-size: 50px;
+}
+
+.rightHeader {
+    display: flex;
+background-color: pink;
+
+}
+
+.bottomNav {
+    width: 100%;
+    background-color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    gap: 10px;
+
+}
+
+.option {
+    font-family: 'Inter';
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.option:hover {
+    font-weight: bold;
+}
